@@ -1,0 +1,221 @@
+
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the application.",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the user." },
+        "email": { "type": "string", "description": "The email address of the user.", "format": "email" },
+        "name": { "type": "string", "description": "The user's full name." },
+        "phone": { "type": "string", "description": "The user's phone number." },
+        "role": { "type": "string", "enum": ["user", "manager", "admin"] },
+        "addresses": {
+          "type": "array",
+          "items": { "$ref": "#/entities/DeliveryAddress" }
+        },
+        "favoriteProducts": { "type": "array", "items": { "type": "string" } },
+        "profileImage": { "type": "string", "format": "uri" },
+        "birthDate": { "type": "string", "format": "date" },
+        "gender": { "type": "string", "enum": ["male", "female", "other"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "email", "name", "role", "createdAt"]
+    },
+    "DeliveryAddress": {
+      "title": "Delivery Address",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "city": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "phone": { "type": "string" },
+        "isDefault": { "type": "boolean" }
+      },
+      "required": ["id", "name", "address", "city", "postalCode", "phone"]
+    },
+    "Category": {
+      "title": "Category",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "parentId": { "type": "string" },
+        "images": { "type": "array", "items": { "type": "string", "format": "uri" } }
+      },
+      "required": ["id", "name", "slug"]
+    },
+    "Brand": {
+      "title": "Brand",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "logoUrl": { "type": "string", "format": "uri" }
+      },
+      "required": ["id", "name"]
+    },
+    "Product": {
+      "title": "Product",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "discount": { "type": "number" },
+        "categoryId": { "type": "string" },
+        "brandId": { "type": "string" },
+        "imageUrl": { "type": "string", "format": "uri" },
+        "images": { "type": "array", "items": { "type": "string", "format": "uri" } },
+        "attributes": {
+          "type": "array",
+          "items": { "$ref": "#/entities/ProductAttribute" }
+        },
+        "stockQuantity": { "type": "number" },
+        "isActive": { "type": "boolean" },
+        "isArchived": { "type": "boolean" },
+        "rating": { "type": "number" },
+        "reviewsCount": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "price", "categoryId", "brandId", "imageUrl", "stockQuantity", "isActive", "createdAt"]
+    },
+    "ProductAttribute": {
+      "title": "Product Attribute",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "value": { "type": "string" }
+      },
+      "required": ["id", "name", "value"]
+    },
+    "CartItem": {
+        "title": "Cart Item",
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "productId": { "type": "string" },
+          "quantity": { "type": "number" },
+          "price": { "type": "number" },
+          "name": { "type": "string" },
+          "image": { "type": "string", "format": "uri" }
+        },
+        "required": ["id", "productId", "quantity", "price", "name"]
+    },
+    "Order": {
+      "title": "Order",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "items": { "type": "array", "items": { "$ref": "#/entities/OrderItem" } },
+        "deliveryAddress": { "$ref": "#/entities/DeliveryAddress" },
+        "paymentMethod": { "type": "string" },
+        "status": { "type": "string", "enum": ["new", "processing", "paid", "shipping", "delivered", "cancelled"] },
+        "subtotal": { "type": "number" },
+        "deliveryFee": { "type": "number" },
+        "total": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "deliveredAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "items", "deliveryAddress", "paymentMethod", "status", "subtotal", "total", "createdAt"]
+    },
+    "OrderItem": {
+      "title": "Order Item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "productId": { "type": "string" },
+        "productName": { "type": "string" },
+        "productImage": { "type": "string", "format": "uri" },
+        "quantity": { "type": "number" },
+        "price": { "type": "number" },
+        "total": { "type": "number" }
+      },
+      "required": ["id", "productId", "productName", "quantity", "price", "total"]
+    },
+    "Review": {
+      "title": "Review",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "productId": { "type": "string" },
+        "rating": { "type": "number", "minimum": 1, "maximum": 5 },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "userName", "productId", "rating", "createdAt"]
+    },
+    "Promotion": {
+      "title": "Promotion",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "type": { "type": "string", "enum": ["percentage", "fixed"] },
+        "value": { "type": "number" },
+        "startDate": { "type": "string", "format": "date-time" },
+        "endDate": { "type": "string", "format": "date-time" },
+        "isActive": { "type": "boolean" },
+        "applicableProducts": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["id", "name", "type", "value", "startDate", "endDate", "isActive"]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ],
+    "customClaims": {
+        "role": {
+            "type": "string",
+            "enum": ["user", "manager", "admin"]
+        }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Stores user profile information."
+    },
+    "/users/{userId}/cart/{cartItemId}": {
+        "schema": { "$ref": "#/entities/CartItem"},
+        "description": "Stores items in a user's shopping cart."
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Stores details for each product."
+    },
+    "/products/{productId}/reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/Review" },
+      "description": "Stores reviews for a specific product."
+    },
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "Stores product categories."
+    },
+    "/brands/{brandId}": {
+      "schema": { "$ref": "#/entities/Brand" },
+      "description": "Stores product brands."
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Stores all customer orders."
+    },
+    "/promotions/{promotionId}": {
+      "schema": { "$ref": "#/entities/Promotion" },
+      "description": "Stores promotional information and discounts."
+    }
+  }
+}
